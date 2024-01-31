@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-static int	ft_ptrlen(unsigned long long num)
+int	ft_ptrlen(unsigned long long num)
 {
 	int	len;
 
@@ -47,10 +47,9 @@ int	ft_putptr(unsigned long long num)
 
 	len = 0;
 	if (num == 0)
-		len += ft_putstr("0x0");
+		return 0;
 	else
 	{
-		len += write(1, "0x", 2);
 		len += ft_ptrlen(num);
 		ft_printptr(num);
 	}

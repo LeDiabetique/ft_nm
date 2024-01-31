@@ -39,6 +39,8 @@ int		ft_printnbr(int n);
 int		ft_printunsigned(unsigned int n);
 int		ft_printhex(unsigned int num, const char format);
 int		ft_putptr(unsigned long long num);
+int		ft_ptrlen(unsigned long long num);
+
 
 typedef struct s_list
 {
