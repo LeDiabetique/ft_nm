@@ -19,6 +19,8 @@ int		open_file(t_nm *nm, char *filename);
 int		get_elf_format(t_nm *nm);
 int		close_file(t_nm *nm);
 unsigned char   get_letter(unsigned char type, Elf64_Sym *symbol);
+int	get_symbol_section(Elf64_Ehdr *header, Elf64_Shdr *sections);
+
 
 
 
