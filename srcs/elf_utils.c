@@ -7,19 +7,26 @@ int	get_symbol_section(Elf64_Ehdr *header, Elf64_Shdr *sections)
 	return (-1);
 }
 
-void	get_addr_formatted(long unsigned int addr, int bits)
+char *get_addr_formatted(long unsigned int addr, int bits)
 {	
 	int len = ft_ptrlen(addr);
 	int size = bits - len;
-	if (len == 0)
+	char *str = ft_calloc(size + 1, sizeof(char));
+	if (!str)
+		return NULL;
+	for (int i = 0; i< size; i++) 
 	{
-		while (bits-- > 0)
-			write(1, " ", 1);
-		return ;
+		if (len == 0)
+			str[i] = 32;
+		else
+			str[i] = 48;
 	}
-	for(int i = 0; i < size; i++)
-		write(1, "0", 1);
-	return ;
+	char *addr_str = convert_addr_to_char(addr, len);
+	char *tmp;
+	tmp = ft_strjoin(str, addr_str);
+	free(str);
+	free(addr_str);
+	return tmp;
 }
 
 unsigned char   get_letter(unsigned char type, Elf64_Sym *symbol)

@@ -30,13 +30,3 @@ void	*ft_memcpy(void	*dest, const void	*src, size_t	n)
 	}
 	return (dest);
 }
-/*
-int main()
-{
-	char des [50] = "ugooooooo";
-	char sr [50] = "Lagf";
-
-	printf("%s",ft_memcpy(des, sr, 10));
-
-	return (0);
-}*/

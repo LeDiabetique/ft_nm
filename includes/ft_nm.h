@@ -20,7 +20,8 @@ int		get_elf_format(t_nm *nm);
 int		close_file(t_nm *nm);
 unsigned char   get_letter(unsigned char type, Elf64_Sym *symbol);
 int		get_symbol_section(Elf64_Ehdr *header, Elf64_Shdr *sections);
-void	get_addr_formatted(long unsigned int addr, int bits);
+char	*get_addr_formatted(long unsigned int addr, int bits);
+char	*convert_addr_to_char(long unsigned int addr, int len);
 
 
 

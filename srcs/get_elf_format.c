@@ -38,9 +38,10 @@ static void handle_64_bits(Elf64_Shdr *sections, Elf64_Ehdr *header, t_nm *nm)
 			unsigned char type = ELF64_ST_TYPE(symbol->st_info);
 			if (type == STT_FUNC || type == STT_OBJECT || symbol->st_shndx == SHN_UNDEF || type != STT_FILE)
 			{
-				get_addr_formatted(symbol->st_value, 16);
+				char *str = get_addr_formatted(symbol->st_value, 16);
 				unsigned char letter = get_letter(type, symbol);
-				ft_printf("%p %c %s\n", (void *)symbol->st_value, letter,&strtab[symbol->st_name]);
+				ft_printf("%s %c %s\n", str, letter,&strtab[symbol->st_name]);
+				free(str);
 			}
 		}
 
