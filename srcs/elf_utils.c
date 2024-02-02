@@ -29,23 +29,40 @@ char *get_addr_formatted(long unsigned int addr, int bits)
 	return tmp;
 }
 
-unsigned char   get_letter(unsigned char type, Elf64_Sym *symbol)
+unsigned char   get_letter(unsigned char type, Elf64_Sym *symbol, Elf64_Shdr *section)
 {
 		unsigned char bind = ELF64_ST_BIND(symbol->st_info);
-		if (symbol->st_shndx == SHN_UNDEF)
-				return ('U');
-		else if (bind == STB_WEAK){
-			bind = 'W';
-			if (symbol->st_shndx == SHN_UNDEF)
-				bind = 'w';
+		int readonly = section->sh_flags & SHF_WRITE ? 0 : 1;
+		if (symbol->st_shndx == SHN_ABS)
+			return ('A');
+		else if (bind == STB_GNU_UNIQUE)
+			return ('u');
+		else if (symbol->st_shndx == SHN_COMMON)
+			return (bind == STB_LOCAL ? 'C' : 'c');
+		else if (bind == STB_WEAK) {
+			if (type == STT_OBJECT)
+				return symbol->st_value <= 0 ? 'v' : 'V';
+			return symbol->st_value <= 0 ? 'w' : 'W';
 		}
-		else if (type == SHT_NOBITS)
-			bind = STB_GLOBAL ? 'B' : 'b';
+		else if (section->sh_type == SHT_MIPS_DEBUG)
+		{
+			if (readonly)
+				return ('n');
+			return ('N');
+		}
+		else if (section->sh_type == SHT_NOBITS && section->sh_flags & SHF_ALLOC)
+			return (bind == STB_GLOBAL ? 'B' : 'b');
+		else if (symbol->st_shndx == SHN_UNDEF)
+				return ('U');
 		else if (type == STT_FUNC)
-			bind = STB_GLOBAL ? 'T' : 't';
-		else if (type == STT_OBJECT)
-			bind = STB_GLOBAL ? 'D' : 'd';
+			return (bind == STB_LOCAL ? 't' : 'T');
+		else if (type == STT_OBJECT || type == STT_NOTYPE)
+		{
+			if (readonly)
+				return (bind == STB_GLOBAL ? 'R' : 'r');
+			return (bind == STB_GLOBAL ? 'D' : 'd');
+		}
 		else
-			return('?');
+			return(printf("symbol->st_value: %lx\n", symbol->st_value),'?');
 		return bind;
 }

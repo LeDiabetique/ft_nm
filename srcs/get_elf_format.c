@@ -12,9 +12,7 @@ static int check_elf_format(unsigned char *ident)
 	// write(1, "This file is an ELF\n", ft_strlen("This file is an ELF\n"));
 	return (0);
 }
-/*
 
-*/
 static void handle_64_bits(Elf64_Shdr *sections, Elf64_Ehdr *header, t_nm *nm)
 {
 	Elf64_Shdr *symsection = NULL;
@@ -29,7 +27,10 @@ static void handle_64_bits(Elf64_Shdr *sections, Elf64_Ehdr *header, t_nm *nm)
 	{
 		Elf64_Sym *symtab = (Elf64_Sym *)(nm->ptr + symsection->sh_offset);
 		int sym_size = symsection->sh_size / symsection->sh_entsize;
-
+		t_symbol *sym_array = malloc(sym_size * sizeof(t_symbol));
+		if (!sym_array)
+			return ft_error("Error: Malloc failed\n");
+		int i_sym = 0;
 		for(int i = 0; i < sym_size; i++)
 		{
 			Elf64_Sym *symbol = &symtab[i];
@@ -38,13 +39,23 @@ static void handle_64_bits(Elf64_Shdr *sections, Elf64_Ehdr *header, t_nm *nm)
 			unsigned char type = ELF64_ST_TYPE(symbol->st_info);
 			if (type == STT_FUNC || type == STT_OBJECT || symbol->st_shndx == SHN_UNDEF || type != STT_FILE)
 			{
-				char *str = get_addr_formatted(symbol->st_value, 16);
-				unsigned char letter = get_letter(type, symbol);
-				ft_printf("%s %c %s\n", str, letter,&strtab[symbol->st_name]);
-				free(str);
+				char *addr = get_addr_formatted(symbol->st_value, 16);
+				unsigned char letter = get_letter(type, symbol, &sections[symbol->st_shndx]);
+				char *name = &strtab[symbol->st_name];
+				// ft_printf("%s %c %s\n", str, letter,&strtab[symbol->st_name]);
+				sym_array[i_sym].addr = addr;
+				sym_array[i_sym].type = letter;
+				sym_array[i_sym].name = name;
+				i_sym++;
 			}
 		}
-
+		bubble_sort(sym_array, i_sym);
+		for (int i = 0; i < i_sym; i++)
+		{
+			ft_printf("%s %c %s\n", sym_array[i].addr, sym_array[i].type, sym_array[i].name);
+			free(sym_array[i].addr);
+		}
+		free(sym_array);
 	}
 }
 
