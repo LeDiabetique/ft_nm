@@ -19,10 +19,3 @@ int	ft_isalpha(int c)
 	else
 		return (0);
 }
-/*int	main ()
-{
-	int b;
-	b = 2;
-
-	printf("%d",ft_isalpha(b));
-}*/

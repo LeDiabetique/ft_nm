@@ -7,16 +7,18 @@ int	get_symbol_section(Elf64_Ehdr *header, Elf64_Shdr *sections)
 	return (-1);
 }
 
-char *get_addr_formatted(long unsigned int addr, int bits)
+char *get_addr_formatted(long unsigned int addr, int bits, char letter)
 {	
 	int len = ft_ptrlen(addr);
+	if (letter == 'U' || letter == 'w' || letter == 'v')
+		len = 0;
 	int size = bits - len;
 	char *str = ft_calloc(size + 1, sizeof(char));
 	if (!str)
 		return NULL;
-	for (int i = 0; i< size; i++) 
+	for (int i = 0; i < size; i++) 
 	{
-		if (len == 0)
+		if (len == 0 && (letter == 'U' || letter == 'w' || letter == 'v'))
 			str[i] = 32;
 		else
 			str[i] = 48;
@@ -63,6 +65,6 @@ unsigned char   get_letter(unsigned char type, Elf64_Sym *symbol, Elf64_Shdr *se
 			return (bind == STB_GLOBAL ? 'D' : 'd');
 		}
 		else
-			return(printf("symbol->st_value: %lx\n", symbol->st_value),'?');
+			return('?');
 		return bind;
 }

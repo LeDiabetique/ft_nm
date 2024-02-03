@@ -27,7 +27,7 @@ int		get_elf_format(t_nm *nm);
 int		close_file(t_nm *nm);
 unsigned char   get_letter(unsigned char type, Elf64_Sym *symbol, Elf64_Shdr *section);
 int		get_symbol_section(Elf64_Ehdr *header, Elf64_Shdr *sections);
-char	*get_addr_formatted(long unsigned int addr, int bits);
+char	*get_addr_formatted(long unsigned int addr, int bits, char letter);
 char	*convert_addr_to_char(long unsigned int addr, int len);
 void	bubble_sort(t_symbol * sym_array, int i_sym);
 
