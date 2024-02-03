@@ -6,7 +6,7 @@ RM		    := rm -f
 
 SRC_DIR		:= srcs/
 SRCS		:= $(addprefix $(SRC_DIR), ft_nm.c open_file.c close_file.c get_elf_format.c \
-					elf_utils.c string_utils.c)
+					elf_utils.c string_utils.c error.c)
 INC_DIR		:= includes/
 
 OBJ_DIR		:= ./obj/

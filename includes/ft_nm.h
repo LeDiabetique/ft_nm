@@ -21,7 +21,9 @@ typedef struct s_symbol
 	char		*name;
 }	t_symbol;
 
-void	ft_error(char *str);
+void	ft_filename_error(char *filename);
+void	ft_error(char *str, int option);
+
 int		open_file(t_nm *nm, char *filename);
 int		get_elf_format(t_nm *nm);
 int		close_file(t_nm *nm);

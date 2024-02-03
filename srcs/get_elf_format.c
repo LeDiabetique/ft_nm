@@ -1,12 +1,12 @@
 #include "../includes/ft_nm.h"
-static int check_elf_format(unsigned char *ident)
+static int check_elf_format(unsigned char *ident,char *filename)
 {
 	 if (ident[EI_MAG0] != ELFMAG0
 		|| ident[EI_MAG1] != ELFMAG1
 		|| ident[EI_MAG2] != ELFMAG2
 		|| ident[EI_MAG3] != ELFMAG3)
 	{
-		ft_error("Error: The file isn't an ELF\n");
+		ft_error(filename, 1);
 		return (1);
 	}
 	// write(1, "This file is an ELF\n", ft_strlen("This file is an ELF\n"));
@@ -29,7 +29,7 @@ static void handle_64_bits(Elf64_Shdr *sections, Elf64_Ehdr *header, t_nm *nm)
 		int sym_size = symsection->sh_size / symsection->sh_entsize;
 		t_symbol *sym_array = malloc(sym_size * sizeof(t_symbol));
 		if (!sym_array)
-			return ft_error("Error: Malloc failed\n");
+			return ft_error("Error: Malloc failed\n", 0);
 		int i_sym = 0;
 		for(int i = 0; i < sym_size; i++)
 		{
@@ -61,7 +61,7 @@ static void handle_64_bits(Elf64_Shdr *sections, Elf64_Ehdr *header, t_nm *nm)
 int get_elf_format(t_nm * nm)
 {
 	unsigned char *ident = (unsigned char *)nm->ptr;
-	if (check_elf_format(ident) != 0)
+	if (check_elf_format(ident, nm->filename) != 0)
 		return (1);
 	if (ident[EI_CLASS] == ELFCLASS32)
 	{
@@ -78,6 +78,6 @@ int get_elf_format(t_nm * nm)
 		handle_64_bits(sections, header, nm);		
 	}
 	else
-		return(ft_error("Error: Wrong bits format\n"), 1);
+		return(ft_error("Error: Wrong bits format\n", 0), 1);
 	return (0);
 }
