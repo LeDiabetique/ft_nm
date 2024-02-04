@@ -15,10 +15,15 @@ int	open_file(t_nm *nm, char *filename)
 		ft_error("Error: File cannot be read\n", 0);
 		return (1);
 	}
+	if (S_ISDIR(nm->buf.st_mode))
+	{
+		ft_error(filename, 4);
+		return (1);
+	}
 	nm->ptr = mmap(0, nm->buf.st_size, PROT_READ, MAP_PRIVATE, nm->fd, 0);
 	if (nm->ptr == MAP_FAILED)
 	{
-		// ft_error("Error: File cannot be mapped\n", 0);
+		close(nm->fd);
 		return (1);
 	}
 	return (0);

@@ -9,7 +9,6 @@ static int check_elf_format(unsigned char *ident,char *filename)
 		ft_error(filename, 1);
 		return (1);
 	}
-	// write(1, "This file is an ELF\n", ft_strlen("This file is an ELF\n"));
 	return (0);
 }
 
@@ -20,9 +19,11 @@ static void handle_64_bits(Elf64_Shdr *sections, Elf64_Ehdr *header, t_nm *nm)
 	int j = -1;
 	if ((j = get_symbol_section(header, sections)) >= 0)
 	{
-			symsection = &sections[j];
-			strtab = (char *)(nm->ptr + sections[symsection->sh_link].sh_offset);
+		symsection = &sections[j];
+		strtab = (char *)(nm->ptr + sections[symsection->sh_link].sh_offset);
 	}
+	else
+		ft_error(nm->filename, 3);
 	if (strtab && symsection)
 	{
 		Elf64_Sym *symtab = (Elf64_Sym *)(nm->ptr + symsection->sh_offset);
@@ -66,6 +67,8 @@ int get_elf_format(t_nm * nm)
 	if (ident[EI_CLASS] == ELFCLASS32)
 	{
 		// write(1, "x86_32 file\n", 12);
+		if ((long unsigned int)nm->buf.st_size < sizeof(Elf32_Ehdr))
+			return(ft_error("Trucbidule", 0), 1);
 		Elf32_Ehdr *header = (Elf32_Ehdr *)nm->ptr;
 		Elf32_Shdr *sections = (Elf32_Shdr *)(nm->ptr + header->e_shoff);
 		(void)sections;
@@ -73,11 +76,15 @@ int get_elf_format(t_nm * nm)
 	else if (ident[EI_CLASS] == ELFCLASS64)
 	{
 		// write(1, "x64 file\n", 9);
+		// printf("nm->buf.st_size: %lu\n", (long unsigned int)nm->buf.st_size);
+		// printf("elf64 size: %lu\n", sizeof(Elf64_Ehdr));
+		if ((long unsigned int)nm->buf.st_size < sizeof(Elf64_Ehdr))
+			return(ft_error("File too short", 0), 1);
 		Elf64_Ehdr *header = (Elf64_Ehdr *)nm->ptr;
 		Elf64_Shdr *sections = (Elf64_Shdr *)(nm->ptr + header->e_shoff);
 		handle_64_bits(sections, header, nm);		
 	}
 	else
-		return(ft_error("Error: Wrong bits format\n", 0), 1);
+		return(ft_error(nm->filename, 1), 1);
 	return (0);
 }

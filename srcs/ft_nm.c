@@ -4,6 +4,7 @@
 int	main(int ac, char **av)
 {
 	t_nm	nm;
+
 	if (ac != 2)
 	{
 		ft_error("Error: Invalid number of arguments\n", 0);
