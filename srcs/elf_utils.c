@@ -1,11 +1,25 @@
 #include "../includes/ft_nm.h"
-int	get_symbol_section(Elf64_Ehdr *header, Elf64_Shdr *sections)
-{
-	for (int i = 0; i < header->e_shnum; i++)
-		if (sections[i].sh_type == SHT_SYMTAB)
-			return (i);
-	return (-1);
-}
+// int	get_symbol_section(void *header_v, void *sections_v, int is_64)
+// {
+	
+// 	if (is_64 == 1)
+// 	{
+// 		Elf64_Ehdr *header = (Elf64_Ehdr *)header_v;
+// 		Elf64_Shdr *sections = (Elf64_Shdr *)sections_v;
+// 		for (int i = 0; i < header->e_shnum; i++)
+// 			if (sections[i].sh_type == SHT_SYMTAB)
+// 				return (i);
+// 	}
+// 	else
+// 	{
+// 		Elf32_Ehdr *header = (Elf32_Ehdr *)header_v;
+// 		Elf32_Shdr *sections = (Elf32_Shdr *)sections_v;
+// 		for (int i = 0; i < header->e_shnum; i++)
+// 			if (sections[i].sh_type == SHT_SYMTAB)
+// 				return (i);
+// 	}
+// 	return (-1);
+// }
 
 char *get_addr_formatted(long unsigned int addr, int bits, char letter)
 {	
@@ -30,41 +44,44 @@ char *get_addr_formatted(long unsigned int addr, int bits, char letter)
 	free(addr_str);
 	return tmp;
 }
+unsigned char get_letter(unsigned char type, void* symbol, void* section, int is_64) {
+    unsigned char bind = get_symbol_bind(symbol, is_64);
+    int readonly = get_section_flags(section, is_64) & SHF_WRITE ? 0 : 1;
+    unsigned short shndx = get_symbol_shndx(symbol, is_64);
+    int section_type = get_section_type(section, is_64);
 
-unsigned char   get_letter(unsigned char type, Elf64_Sym *symbol, Elf64_Shdr *section)
-{
-		unsigned char bind = ELF64_ST_BIND(symbol->st_info);
-		int readonly = section->sh_flags & SHF_WRITE ? 0 : 1;
-		if (symbol->st_shndx == SHN_ABS)
-			return ('A');
-		else if (bind == STB_GNU_UNIQUE)
-			return ('u');
-		else if (symbol->st_shndx == SHN_COMMON)
-			return (bind == STB_LOCAL ? 'C' : 'c');
-		else if (bind == STB_WEAK) {
-			if (type == STT_OBJECT)
-				return symbol->st_value <= 0 ? 'v' : 'V';
-			return symbol->st_value <= 0 ? 'w' : 'W';
-		}
-		else if (section->sh_type == SHT_MIPS_DEBUG)
-		{
-			if (readonly)
-				return ('n');
-			return ('N');
-		}
-		else if (section->sh_type == SHT_NOBITS && section->sh_flags & SHF_ALLOC)
-			return (bind == STB_GLOBAL ? 'B' : 'b');
-		else if (symbol->st_shndx == SHN_UNDEF)
-				return ('U');
-		else if (type == STT_FUNC)
-			return (bind == STB_LOCAL ? 't' : 'T');
-		else if (type == STT_OBJECT || type == STT_NOTYPE)
-		{
-			if (readonly)
-				return (bind == STB_GLOBAL ? 'R' : 'r');
-			return (bind == STB_GLOBAL ? 'D' : 'd');
-		}
-		else
-			return('?');
-		return bind;
+    if (shndx == SHN_ABS)
+        return ('A');
+    else if (bind == STB_GNU_UNIQUE)
+        return ('u');
+    else if (shndx == SHN_COMMON)
+        return (bind == STB_LOCAL ? 'C' : 'c');
+    else if (bind == STB_WEAK) {
+        // Supposons que vous avez une fonction pour obtenir st_value de manière générique
+        unsigned long st_value = get_symbol_value(symbol, is_64);
+        if (type == STT_OBJECT)
+            return st_value <= 0 ? 'v' : 'V';
+        return st_value <= 0 ? 'w' : 'W';
+    }
+    else if (section_type == SHT_MIPS_DEBUG) {
+        if (readonly)
+            return ('n');
+        return ('N');
+    }
+    else if (section_type == SHT_NOBITS && get_section_flags(section, is_64) & SHF_ALLOC)
+        return (bind == STB_GLOBAL ? 'B' : 'b');
+    else if (shndx == SHN_UNDEF)
+        return ('U');
+    else if (type == STT_FUNC)
+        return (bind == STB_LOCAL ? 't' : 'T');
+    else if (type == STT_OBJECT || type == STT_NOTYPE) {
+        if (readonly) {
+            if (get_section_flags(section, is_64) & SHF_EXECINSTR)
+                return (bind == STB_GLOBAL ? 'T' : 't');
+            return (bind == STB_GLOBAL ? 'R' : 'r');
+        }   
+        return (bind == STB_GLOBAL ? 'D' : 'd');
+    }
+    else
+        return('?');
 }
