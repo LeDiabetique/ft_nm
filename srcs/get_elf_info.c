@@ -149,3 +149,34 @@ int get_symbol_name(void *symbol, int is_64) {
     }
 }
 
+unsigned long   get_section_header_offset(void *header, int is_64)
+{
+    if (is_64)
+        return ((Elf64_Ehdr *)header)->e_shoff;
+    else
+        return ((Elf32_Ehdr *)header)->e_shoff;
+}
+
+unsigned int    get_section_header_number(void *header, int is_64)
+{
+    if (is_64)
+        return ((Elf64_Ehdr *)header)->e_shnum;
+    else
+        return ((Elf32_Ehdr *)header)->e_shnum;
+}
+
+unsigned int    get_section_header_entry_size(void *header, int is_64)
+{
+    if (is_64)
+        return ((Elf64_Ehdr *)header)->e_shentsize;
+    else
+        return ((Elf32_Ehdr *)header)->e_shentsize;
+}
+
+unsigned int    get_section_name_string_index(void *header, int is_64)
+{
+    if (is_64)
+        return ((Elf64_Ehdr *)header)->e_shstrndx;
+    else
+        return ((Elf32_Ehdr *)header)->e_shstrndx;
+}

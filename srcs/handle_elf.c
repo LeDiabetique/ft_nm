@@ -41,10 +41,7 @@ void handle_elf(void *sections_v, void *header_v, t_nm *nm, int is_64)
             }
         }
         bubble_sort(sym_array, i_sym);
-        for (int i = 0; i < i_sym; i++) {
-            ft_printf("%s %c %s\n", sym_array[i].addr, sym_array[i].type, sym_array[i].name);
-            free(sym_array[i].addr);
-        }
+        print_nm(sym_array, i_sym, nm);
         free(sym_array);
     }
 }

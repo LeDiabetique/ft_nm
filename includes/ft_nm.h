@@ -14,6 +14,7 @@
 		int			fd;
 		struct stat	buf;
 		void		*ptr;
+		int			flag;
 	}	t_nm;
 
 
@@ -52,7 +53,11 @@
 	int				get_symbol_value(void* symbol, int is_64);
 	void 			*get_symbol(void *symtab, int i, int is_64);
 	int				get_symbol_name(void *symbol, int is_64);
-
+	unsigned int	get_section_name_string_index(void *header, int is_64);
+	unsigned int    get_section_header_entry_size(void *header, int is_64);
+	unsigned int	get_section_header_number(void *header, int is_64);
+	unsigned long   get_section_header_offset(void *header, int is_64);
+	
 
 					/*	STRING FORMAT FUNCTIONS  */
 	int				get_elf_format(t_nm *nm);
@@ -63,5 +68,9 @@
 
 					/*	ELF FILE HANDLER  */
 	void			handle_elf(void *sections, void *header, t_nm *nm, int is_64);
+
+
+					/*  PRINT FUNCTION  */
+	void			print_nm(t_symbol *sym_array, int size, t_nm *nm);
 
 #endif

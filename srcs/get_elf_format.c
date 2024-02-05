@@ -19,27 +19,26 @@ int get_elf_format(t_nm * nm)
 	unsigned char *ident = (unsigned char *)nm->ptr;
 	if (check_elf_format(ident, nm->filename) != 0)
 		return (1);
-	if (ident[EI_CLASS] == ELFCLASS32)
-	{
-		Elf32_Ehdr *header = (Elf32_Ehdr *)nm->ptr;
-		Elf32_Shdr *sections = (Elf32_Shdr *)(nm->ptr + header->e_shoff);
-		if (header->e_shoff +(header->e_shentsize * header->e_shnum) > (long unsigned int)nm->buf.st_size)
-			return(ft_error(nm->filename, 3), 1);
-		if (header->e_shstrndx >= header->e_shnum)
-			return(ft_error(nm->filename, 1), 1);
-		handle_elf(sections, header, nm, 0);	
-	}
-	else if (ident[EI_CLASS] == ELFCLASS64)
-	{
-		Elf64_Ehdr *header = (Elf64_Ehdr *)nm->ptr;
-		Elf64_Shdr *sections = (Elf64_Shdr *)(nm->ptr + header->e_shoff);
-		if (header->e_shoff +(header->e_shentsize * header->e_shnum) > (long unsigned int)nm->buf.st_size)
-			return(ft_error(nm->filename, 5), ft_error(nm->filename, 1), 1);
-		if (header->e_shstrndx >= header->e_shnum)
-			return(ft_error(nm->filename, 1), 1);
-		handle_elf(sections, header, nm, 1);		
-	}
-	else
+	int is_64 = ident[EI_CLASS] == ELFCLASS64;
+	if (ident[EI_CLASS] != ELFCLASS32 && ident[EI_CLASS] != ELFCLASS64)
 		return(ft_error(nm->filename, 1), 1);
+	void *header = nm->ptr;
+    unsigned long e_shoff = get_section_header_offset(header, is_64);
+    unsigned int e_shnum = get_section_header_number(header, is_64);
+    unsigned int e_shentsize = get_section_header_entry_size(header, is_64);
+    unsigned int e_shstrndx = get_section_name_string_index(header, is_64);
+	if (e_shoff + (e_shentsize * e_shnum) > (long unsigned int)nm->buf.st_size)
+    {
+		if (is_64)
+			return (ft_error(nm->filename, 5), ft_error(nm->filename, 1), 1);
+		return (ft_error(nm->filename, 3), 1);
+	}
+	if (e_shstrndx >= e_shnum)
+    {
+		ft_error(nm->filename, 1);
+		return (1);
+	}	
+	void *sections = (void *)((char *)nm->ptr + e_shoff);
+    handle_elf(sections, header, nm, is_64);
 	return (0);
 }

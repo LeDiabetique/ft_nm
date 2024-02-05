@@ -39,14 +39,19 @@ char *get_addr_formatted(long unsigned int addr, int bits, char letter)
 
 unsigned char get_letter(unsigned char type, void* symbol, void* section, int is_64)
 {
-    unsigned char bind = get_symbol_bind(symbol, is_64);
-    int readonly = get_section_flags(section, is_64) & SHF_WRITE ? 0 : 1;
-    unsigned short shndx = get_symbol_shndx(symbol, is_64);
-    int section_type = get_section_type(section, is_64);
 
-    if (shndx == SHN_ABS)
+    unsigned char bind = get_symbol_bind(symbol, is_64);
+    // write(2, "OPEN", 5);
+    unsigned short shndx = get_symbol_shndx(symbol, is_64);
+
+    if (shndx == SHN_ABS){
+        if (bind == STB_LOCAL)
+            return ('a');
         return ('A');
-    else if (bind == STB_GNU_UNIQUE)
+    }
+    int readonly = get_section_flags(section, is_64) & SHF_WRITE ? 0 : 1;
+    int section_type = get_section_type(section, is_64);
+    if (bind == STB_GNU_UNIQUE)
         return ('u');
     else if (shndx == SHN_COMMON)
         return (bind == STB_LOCAL ? 'C' : 'c');
@@ -54,6 +59,8 @@ unsigned char get_letter(unsigned char type, void* symbol, void* section, int is
         unsigned long st_value = get_symbol_value(symbol, is_64);
         if (type == STT_OBJECT)
             return st_value <= 0 ? 'v' : 'V';
+        if (shndx == SHN_UNDEF)
+            return ('w');
         return st_value <= 0 ? 'w' : 'W';
     }
     else if (section_type == SHT_MIPS_DEBUG) {
@@ -77,4 +84,15 @@ unsigned char get_letter(unsigned char type, void* symbol, void* section, int is
     }
     else
         return('?');
+}
+
+void print_nm(t_symbol *sym_array, int size, t_nm *nm)
+{
+    (void)nm;
+    for (int i = 0; i < size; i++) {
+        if (nm->flag == 2 && (sym_array[i].type != 'U' && sym_array[i].type != 'w'))
+            continue;
+        ft_printf("%s %c %s\n", sym_array[i].addr, sym_array[i].type, sym_array[i].name);
+        free(sym_array[i].addr);
+    }
 }
