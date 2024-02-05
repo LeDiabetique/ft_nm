@@ -1,6 +1,6 @@
 #include "../includes/ft_nm.h"
 
-void    ft_format_error(char *filename)
+static void ft_format_error(char *filename)
 {
     write (2, "nm: ", 4);
     write (2, filename, ft_strlen(filename));
@@ -8,14 +8,15 @@ void    ft_format_error(char *filename)
     return ;
 }
 
-void    ft_symbol_error(char *symbol)
+static void ft_symbol_error(char *symbol)
 {
     write (2, "nm: ", 4);
     write (2, symbol, ft_strlen(symbol));
     write (2, ": no symbols\n", 13);
     return ;
 }
-void	ft_filename_error(char *filename)
+
+static void ft_filename_error(char *filename)
 {
     write (2, "nm: '", 5);
     write (2, filename, ft_strlen(filename));
@@ -23,7 +24,7 @@ void	ft_filename_error(char *filename)
     return ;
 }
 
-void    ft_directory_error(char *filename)
+static void ft_directory_error(char *filename)
 {
     write (2, "nm: Warning: '", 14);
     write (2, filename, ft_strlen(filename));
@@ -31,7 +32,15 @@ void    ft_directory_error(char *filename)
     return ;
 }
 
-void	ft_error(char *str, int option)
+static void ft_bfd_plugin(char *filename)
+{
+    write (1, "bfd plugin: ", 12);
+    write (1, filename, ft_strlen(filename));
+    write (1, ": file too short\n", 17);
+    return ;
+}
+
+void    ft_error(char *str, int option)
 {
     if (option == 1)
         ft_format_error(str);
@@ -41,6 +50,8 @@ void	ft_error(char *str, int option)
         ft_symbol_error(str);
     else if (option == 4)
         ft_directory_error(str);
+    else if (option == 5)
+        ft_bfd_plugin(str);
     else
         ft_putstr_fd(str, 2);
     return ;

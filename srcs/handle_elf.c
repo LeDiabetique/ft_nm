@@ -1,27 +1,15 @@
 #include "../includes/ft_nm.h"
 
-void *get_linked_section(void *sections_v, void *symsection, int is_64) {
-    unsigned int sh_link;
-    if (is_64) {
-        Elf64_Shdr *symsec = (Elf64_Shdr *)symsection;
-        sh_link = symsec->sh_link;
-        return (void *)((Elf64_Shdr *)sections_v + sh_link);
-    } else {
-        Elf32_Shdr *symsec = (Elf32_Shdr *)symsection;
-        sh_link = symsec->sh_link;
-        return (void *)((Elf32_Shdr *)sections_v + sh_link);
-    }
-}
-
-void handle_elf(void *sections_v, void *header_v, t_nm *nm, int is_64) {
+void handle_elf(void *sections_v, void *header_v, t_nm *nm, int is_64)
+{
     int j = -1;
     void *symsection = NULL;
     char *strtab = NULL;
     int bits = is_64 ? 16 : 8;
+
     if ((j = get_symbol_section(header_v, sections_v, is_64)) >= 0) {
         symsection = get_section(sections_v, j, is_64);
-        void *linked_section = get_linked_section(sections_v, symsection, is_64); // Cette fonction doit être implémentée
-
+        void *linked_section = get_linked_section(sections_v, symsection, is_64);
         strtab = (char *)(nm->ptr + get_section_offset(linked_section, is_64));
 
     } 
@@ -30,7 +18,7 @@ void handle_elf(void *sections_v, void *header_v, t_nm *nm, int is_64) {
     }
     if (strtab && symsection) {
         void *symtab = (nm->ptr + get_section_offset(symsection, is_64));
-        int sym_size = get_section_size(symsection, is_64) / get_section_entsize(symsection, is_64); // Implémentez ces fonctions
+        int sym_size = get_section_size(symsection, is_64) / get_section_entsize(symsection, is_64);
         t_symbol *sym_array = malloc(sym_size * sizeof(t_symbol));
         if (!sym_array)
             return ft_error("Error: Malloc failed\n", 0);

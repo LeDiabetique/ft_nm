@@ -1,25 +1,17 @@
 #include "../includes/ft_nm.h"
-// int	get_symbol_section(void *header_v, void *sections_v, int is_64)
-// {
-	
-// 	if (is_64 == 1)
-// 	{
-// 		Elf64_Ehdr *header = (Elf64_Ehdr *)header_v;
-// 		Elf64_Shdr *sections = (Elf64_Shdr *)sections_v;
-// 		for (int i = 0; i < header->e_shnum; i++)
-// 			if (sections[i].sh_type == SHT_SYMTAB)
-// 				return (i);
-// 	}
-// 	else
-// 	{
-// 		Elf32_Ehdr *header = (Elf32_Ehdr *)header_v;
-// 		Elf32_Shdr *sections = (Elf32_Shdr *)sections_v;
-// 		for (int i = 0; i < header->e_shnum; i++)
-// 			if (sections[i].sh_type == SHT_SYMTAB)
-// 				return (i);
-// 	}
-// 	return (-1);
-// }
+
+static char *convert_addr_to_char(long unsigned int addr, int len)
+{
+    char *str = malloc(sizeof(char) * len + 1);
+    str[len] = '\0';
+    for (int i = len - 1; i >= 0; --i) {
+        int digit = addr & 0xF;
+        str[i] = (digit < 10) ? (digit + '0') : (digit + 'a' - 10);
+        addr >>= 4;
+    }
+    return str;
+}
+
 
 char *get_addr_formatted(long unsigned int addr, int bits, char letter)
 {	
@@ -44,7 +36,9 @@ char *get_addr_formatted(long unsigned int addr, int bits, char letter)
 	free(addr_str);
 	return tmp;
 }
-unsigned char get_letter(unsigned char type, void* symbol, void* section, int is_64) {
+
+unsigned char get_letter(unsigned char type, void* symbol, void* section, int is_64)
+{
     unsigned char bind = get_symbol_bind(symbol, is_64);
     int readonly = get_section_flags(section, is_64) & SHF_WRITE ? 0 : 1;
     unsigned short shndx = get_symbol_shndx(symbol, is_64);
@@ -57,7 +51,6 @@ unsigned char get_letter(unsigned char type, void* symbol, void* section, int is
     else if (shndx == SHN_COMMON)
         return (bind == STB_LOCAL ? 'C' : 'c');
     else if (bind == STB_WEAK) {
-        // Supposons que vous avez une fonction pour obtenir st_value de manière générique
         unsigned long st_value = get_symbol_value(symbol, is_64);
         if (type == STT_OBJECT)
             return st_value <= 0 ? 'v' : 'V';

@@ -1,24 +1,13 @@
 #include "../includes/ft_nm.h"
 
-
-char *convert_addr_to_char(long unsigned int addr, int len)
-{
-    char *str = malloc(sizeof(char) * len + 1);
-    str[len] = '\0';
-    for (int i = len - 1; i >= 0; --i) {
-        int digit = addr & 0xF;
-        str[i] = (digit < 10) ? (digit + '0') : (digit + 'a' - 10);
-        addr >>= 4;
-    }
-    return str;
-}
-char ft_symtolower(char c)
+static char ft_symtolower(char c)
 {
     if (c >= 'A' && c <= 'Z')
         return (c + 32);
     return c;
 }
-char * get_formatted_name(char *name)
+
+static char *get_formatted_name(char *name)
 {
     char *formatted_name = malloc(sizeof(char) * ft_strlen(name) + 1);
     int j = 0;
@@ -33,7 +22,7 @@ char * get_formatted_name(char *name)
     return formatted_name;
 }
 
-int ft_symcmp(char * name1, char *name2)
+static int ft_symcmp(char * name1, char *name2)
 {
     int i = 0;
     int j = 0;
@@ -52,6 +41,7 @@ int ft_symcmp(char * name1, char *name2)
     int result = sym1[i] - sym2[j];
     return (free(sym1), free(sym2), result);
 }
+
 void bubble_sort(t_symbol * sym_array, int i_sym)
 {
     t_symbol tmp;

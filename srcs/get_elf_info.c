@@ -11,6 +11,20 @@ int get_shnum(void *header_v, int is_64)
     }
 }
 
+void *get_linked_section(void *sections_v, void *symsection, int is_64)
+{
+    unsigned int sh_link;
+    if (is_64) {
+        Elf64_Shdr *symsec = (Elf64_Shdr *)symsection;
+        sh_link = symsec->sh_link;
+        return (void *)((Elf64_Shdr *)sections_v + sh_link);
+    } else {
+        Elf32_Shdr *symsec = (Elf32_Shdr *)symsection;
+        sh_link = symsec->sh_link;
+        return (void *)((Elf32_Shdr *)sections_v + sh_link);
+    }
+}
+
 int get_sh_type(void *sections_v, int i, int is_64) {
     if (is_64) {
         Elf64_Shdr *sections = (Elf64_Shdr *)sections_v;
@@ -135,50 +149,3 @@ int get_symbol_name(void *symbol, int is_64) {
     }
 }
 
-void handle_32_bits(Elf32_Shdr *sections, Elf32_Ehdr *header, t_nm *nm)
-{
-    int is_64 = 0;
-    Elf32_Shdr *symsection = NULL;
-	char *strtab = NULL;
-	int j = -1;
-	if ((j = get_symbol_section((void *)header, (void *)sections, is_64)) >= 0)
-	{
-		symsection = &sections[j];
-		strtab = (char *)(nm->ptr + sections[symsection->sh_link].sh_offset);
-	}
-	else
-		ft_error(nm->filename, 3);
-	if (strtab && symsection)
-	{
-		Elf32_Sym *symtab = (Elf32_Sym *)(nm->ptr + symsection->sh_offset);
-		int sym_size = symsection->sh_size / symsection->sh_entsize;
-		t_symbol *sym_array = malloc(sym_size * sizeof(t_symbol));
-		if (!sym_array)
-			return ft_error("Error: Malloc failed\n", 0);
-		int i_sym = 0;
-		for(int i = 0; i < sym_size; i++)
-		{
-			Elf32_Sym *symbol = &symtab[i];
-			if (!strtab[symbol->st_name])
-				continue;
-			unsigned char type = get_st_type((void *)symbol, is_64);
-			if (type == STT_FUNC || type == STT_OBJECT || symbol->st_shndx == SHN_UNDEF || type != STT_FILE)
-			{
-				unsigned char letter = get_letter(type, (void *)symbol, (void *)&sections[symbol->st_shndx], is_64); //modif cast
-				char *addr = get_addr_formatted(symbol->st_value, 8, letter);
-				char *name = &strtab[symbol->st_name];
-				sym_array[i_sym].addr = addr;
-				sym_array[i_sym].type = letter;
-				sym_array[i_sym].name = name;
-				i_sym++;
-			}
-		}
-		bubble_sort(sym_array, i_sym);
-		for (int i = 0; i < i_sym; i++)
-		{
-			ft_printf("%s %c %s\n", sym_array[i].addr, sym_array[i].type, sym_array[i].name);
-			free(sym_array[i].addr);
-		}
-		free(sym_array);
-	}
-}
