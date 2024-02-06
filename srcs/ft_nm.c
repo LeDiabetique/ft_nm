@@ -1,69 +1,84 @@
 #include "../includes/ft_nm.h"
 
-int check_flags(char **av)
+int check_flags(char **av, int ac,t_nm *nm)
 {
 	int i = 1;
-	int flag = -1;
+	int j = 0;
 	int fd = 0;
-	if ((fd = open(av[i], O_RDONLY)) > 0)
+	nm->args.a = 0;
+	nm->args.g = 0;
+	nm->args.p = 0;
+	nm->args.r = 0;
+	nm->args.u = 0;
+	
+	while (i < ac)
 	{
-		close(fd);
-		return (0);
-	}
-	if (av[i][0] == '-' && ft_strlen(av[i]) == 2)
-	{
-		if (av[i][1] == 'p')
-			flag = 1;
-		else if (av[i][1] == 'u')
-			flag = 2;
-		else if (av[i][1] == 'a')
-			flag = 3;
-		else if (av[i][1] == 'r')
-			flag = 4;
-		else if (av[i][1] == 'g')
-			flag = 5;
+		if (av[i][0] == '-' && ft_strlen(av[i]) == 2)
+		{
+			if ((fd = open(av[i], O_RDONLY)) > 0 && ac == 2)
+			{
+				close(fd);
+				nm->args.files[j++] = av[i++];
+				nm->args.count++;
+				continue;
+			}
+			if (av[i][1] == 'p')
+				nm->args.p = 1;
+			else if (av[i][1] == 'u')
+				nm->args.u = 1;
+			else if (av[i][1] == 'a')
+				nm->args.a = 1;
+			else if (av[i][1] == 'r')
+				nm->args.r = 1;
+			else if (av[i][1] == 'g')
+				nm->args.g = 1;
+			else
+			{
+				ft_error("Error: Invalid flag\n", 0);
+				return (-1);
+			}
+			nm->has_flag = 1;
+			i++;
+		}
 		else
 		{
-			ft_error("Error: Invalid flag\n", 0);
-			return (-2);
+			nm->args.files[j++] = av[i++];
+			nm->args.count++;
 		}
 	}
-	return (flag);
+	return (nm->has_flag);
 }
 
 int	main(int ac, char **av)
 {
 	char	*filename;
 	t_nm	nm;
-	nm.flag = 0;
-	if (ac == 1)
-		filename = "a.out";
+	int i = 0;
+
+	nm.args.files = malloc(sizeof(char *) * ac);
+	if (!nm.args.files)
+	{
+		ft_error("Error: Malloc failed\n", 0);
+		return (-1);
+	}
+	nm.args.files[i] = "a.out";
 	if (ac > 1)
 	{
-		if ((nm.flag = check_flags(av)) > -2)
-		{
-			if (nm.flag > 0 && ac == 2)
-				filename = "a.out";
-			else if (ac == 3 && nm.flag != -1)
-				filename = av[2];
-			else
-				filename = av[1];
-		}
-		else 
+		if ((nm.has_flag = check_flags(av, ac, &nm)) < 0)
 			return (1);
 	}
-	else if (ac > 3)
+	if (nm.args.count == 0)
+		nm.args.count = 1;
+	while (i < nm.args.count)
 	{
-		ft_error("Error: Invalid number of arguments\n", 0);
-		return (1);
+		filename = nm.args.files[i++];
+		if (open_file(&nm, filename) != 0)
+			continue;
+		if (get_elf_format(&nm) != 0)
+			continue;
+		if (close_file(&nm) != 0)
+			continue;
 	}
-	else
-		filename = av[1];
-	if (open_file(&nm, filename) != 0)
-		return (1);
-	if (get_elf_format(&nm) != 0)
-		return (1);
-	if (close_file(&nm) != 0)
-		return (1);
+	free(nm.args.files);
 	return (0);
 }

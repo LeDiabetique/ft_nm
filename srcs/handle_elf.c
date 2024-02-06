@@ -27,7 +27,10 @@ void handle_elf(void *sections_v, void *header_v, t_nm *nm, int is_64)
             void *symbol = get_symbol(symtab, i, is_64);
             if (!strtab[get_symbol_name(symbol, is_64)])
             {
-                continue;
+                if (nm->args.a == 1)
+                    continue;
+                else if (get_symbol_shndx(symbol, is_64) != SHN_ABS)
+                    continue;
             }
             unsigned char type = get_st_type(symbol, is_64);
             if (type == STT_FUNC || type == STT_OBJECT || get_symbol_shndx(symbol, is_64) == SHN_UNDEF || type != STT_FILE) {
@@ -40,7 +43,8 @@ void handle_elf(void *sections_v, void *header_v, t_nm *nm, int is_64)
                 i_sym++;
             }
         }
-        bubble_sort(sym_array, i_sym);
+        if (nm->args.p == 0)
+            bubble_sort(sym_array, i_sym);
         print_nm(sym_array, i_sym, nm);
         free(sym_array);
     }

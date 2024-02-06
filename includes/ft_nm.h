@@ -7,6 +7,19 @@
 # include "../libft/Includes/libft.h"
 
 
+					/*  NM ARGS  */
+	typedef struct s_args
+	{
+		int a;
+		int g;
+		int p;
+		int r;
+		int u;
+		int count;
+		char **files;
+	}	t_args;
+
+
 					/*  NM STRUCT  */		
 	typedef struct s_nm
 	{
@@ -14,9 +27,9 @@
 		int			fd;
 		struct stat	buf;
 		void		*ptr;
-		int			flag;
+		t_args		args;
+		int			has_flag;
 	}	t_nm;
-
 
 					/*  SYMBOL STRUCT  */
 	typedef struct s_symbol

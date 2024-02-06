@@ -39,9 +39,7 @@ char *get_addr_formatted(long unsigned int addr, int bits, char letter)
 
 unsigned char get_letter(unsigned char type, void* symbol, void* section, int is_64)
 {
-
     unsigned char bind = get_symbol_bind(symbol, is_64);
-    // write(2, "OPEN", 5);
     unsigned short shndx = get_symbol_shndx(symbol, is_64);
 
     if (shndx == SHN_ABS){
@@ -88,11 +86,18 @@ unsigned char get_letter(unsigned char type, void* symbol, void* section, int is
 
 void print_nm(t_symbol *sym_array, int size, t_nm *nm)
 {
-    (void)nm;
+    if (nm->args.count > 1)
+        ft_printf("\n%s:\n", nm->filename);
     for (int i = 0; i < size; i++) {
-        if (nm->flag == 2 && (sym_array[i].type != 'U' && sym_array[i].type != 'w'))
+        if (nm->args.u == 1 && (sym_array[i].type != 'U' && sym_array[i].type != 'w'))
             continue;
         ft_printf("%s %c %s\n", sym_array[i].addr, sym_array[i].type, sym_array[i].name);
         free(sym_array[i].addr);
     }
 }
+
+/*
+    -u overrides -a and -g
+    -g overrides -a
+    -p overrides -r
+*/
