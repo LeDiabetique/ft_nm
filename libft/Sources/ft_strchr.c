@@ -33,9 +33,3 @@ char	*ft_strchr(const char	*str, int c)
 	}
 	return (0);
 }
-/*
-int main ()
-{
-	char *string = "this is My string";
-	printf("%s", ft_strchr(string,'M')); 
-}*/

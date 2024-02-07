@@ -36,15 +36,3 @@ char	*ft_strnstr(const char	*b, const char	*l, size_t i)
 	}
 	return (NULL);
 }
-/*int main ()
-{
-	const char *largestring = "aaabcabcd";
-    const char *smallstring = "cd";
-    char *ptr;
-	char *ptr2;
-	ptr = ft_strnstr(largestring,smallstring, 8);
-	ptr2 = strnstr(largestring, smallstring, 8);
-
-	printf("%s\n", ptr);
-	printf("%s", ptr2);
-}*/

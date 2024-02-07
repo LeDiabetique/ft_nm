@@ -20,17 +20,3 @@ int	ft_isalnum(int c)
 	else
 		return (0);
 }
-/*int main()
-{
-	int b;
-	int d;
-	int a;
-
-	b = 50;
-	d = 66;
-	a = 109;
-
-	printf("%d\n", ft_isalnum(b));
-	printf("%d\n", ft_isalnum(d));
-	printf("%d\n", ft_isalnum(a));
-}*/

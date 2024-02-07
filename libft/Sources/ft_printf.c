@@ -56,19 +56,3 @@ int	ft_printf(const char *str, ...)
 	va_end(args);
 	return (print);
 }
-/*
-#include <stdio.h>
-
-int main()
-{
-
-	char *c = "hugo";
-	char *b;
-
-	b = c;
-	ft_printf("%p\n", c);
-	c = "hd";
-	printf("%p\n", c);
-	ft_printf("%p\n", b);
-	printf("%p\n", b);
-}*/

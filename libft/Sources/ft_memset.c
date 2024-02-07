@@ -23,11 +23,3 @@ void	*ft_memset(void *str, int c, size_t count)
 	}
 	return (str);
 }
-/*int main()
-{
-	char str[50] = "HugoDIOT";
-	int d;
-	d = 's';
-
-	printf("%s", ft_memset(str,d,4));
-}*/

@@ -39,24 +39,4 @@ int	ft_atoi(const char	*str)
 	}
 	return (res * sign);
 }
-/*int main () 
-{
-   int val;
-   int vala;
-   char str[20];
-   
-   strcpy(str, " 9+ 8993t489");
-   vala = ft_atoi(str);
-   printf("String value = %s, Int value = %d\n", str, vala);
 
-   val = atoi(str);
-   printf("String value = %s, Int value = %d\n", str, val);
-
-   strcpy(str, "tutorialspoint.com");
-   val = atoi(str);
-   printf("String value = %s, Int value = %d\n", str, val);
-   vala = ft_atoi(str);
-   printf("String value = %s, Int value = %d\n", str, vala);
-
-   return(0);
-}*/

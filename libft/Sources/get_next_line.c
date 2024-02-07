@@ -112,25 +112,3 @@ char	*get_next_line(int fd)
 	str = ft_after(str);
 	return (line);
 }
-/*
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-int main()
-{
-   int fd = open("hugo", O_RDONLY);
-   char *line = NULL;
-
-
-   line = get_next_line(fd);
-   printf("%s\n", line);
-   line = get_next_line(fd);
-   printf("%s\n", line);
-   line = get_next_line(fd);
-   printf("%s\n", line);
-   close(fd);
-   fd = open("hugo", O_RDONLY);
-   line = get_next_line(fd);
-   printf("%s\n", line);
-}*/

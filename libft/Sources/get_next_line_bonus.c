@@ -110,19 +110,3 @@ char	*get_next_line_bonus(int fd)
 	str[fd] = ft_after(str[fd]);
 	return (line);
 }
-/*
-   int main()
-   {
-   int fd = open("hugo", O_RDONLY);
-   char *line = NULL;
-
-
-   line = get_next_line(fd);
-   printf("%s\n", line);
-   line = get_next_line(fd);
-   printf("%s\n", line);
-   line = get_next_line(fd);
-   printf("%s\n", line);
-   line = get_next_line(fd);
-   printf("%s\n", line);
-   }*/

@@ -27,21 +27,25 @@ void handle_elf(void *sections_v, void *header_v, t_nm *nm, int is_64)
             void *symbol = get_symbol(symtab, i, is_64);
             if (!strtab[get_symbol_name(symbol, is_64)])
             {
-                if (nm->args.a == 1)
+                if (nm->args.a == 0 || nm->args.g == 1)
                     continue;
                 else if (get_symbol_shndx(symbol, is_64) != SHN_ABS)
                     continue;
             }
             unsigned char type = get_st_type(symbol, is_64);
-            if (type == STT_FUNC || type == STT_OBJECT || get_symbol_shndx(symbol, is_64) == SHN_UNDEF || type != STT_FILE) {
-                unsigned char letter = get_letter(type, symbol, get_section(sections_v, get_symbol_shndx(symbol, is_64), is_64), is_64);
-                char *addr = get_addr_formatted(get_symbol_value(symbol, is_64), bits, letter);
-                char *name = &strtab[get_symbol_name(symbol, is_64)];
-                sym_array[i_sym].addr = addr;
-                sym_array[i_sym].type = letter;
-                sym_array[i_sym].name = name;
-                i_sym++;
-            }
+            if (nm->args.a == 0 || (nm->args.a == 1 && nm->args.g == 1)) 
+                if (!(type == STT_FUNC || type == STT_OBJECT || get_symbol_shndx(symbol, is_64) == SHN_UNDEF || type != STT_FILE))
+                    continue;
+            if (nm->args.g == 1)
+                if (get_symbol_bind(symbol, is_64) != STB_GLOBAL && (!(get_symbol_bind(symbol, is_64) == STB_WEAK && type != STT_OBJECT)))
+                    continue;
+            unsigned char letter = get_letter(type, symbol, get_section(sections_v, get_symbol_shndx(symbol, is_64), is_64), is_64);
+            char *addr = get_addr_formatted(get_symbol_value(symbol, is_64), bits, letter);
+            char *name = &strtab[get_symbol_name(symbol, is_64)];
+            sym_array[i_sym].addr = addr;
+            sym_array[i_sym].type = letter;
+            sym_array[i_sym].name = name;
+            i_sym++;
         }
         if (nm->args.p == 0)
             bubble_sort(sym_array, i_sym);

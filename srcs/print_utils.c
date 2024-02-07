@@ -88,16 +88,22 @@ void print_nm(t_symbol *sym_array, int size, t_nm *nm)
 {
     if (nm->args.count > 1)
         ft_printf("\n%s:\n", nm->filename);
-    for (int i = 0; i < size; i++) {
-        if (nm->args.u == 1 && (sym_array[i].type != 'U' && sym_array[i].type != 'w'))
-            continue;
-        ft_printf("%s %c %s\n", sym_array[i].addr, sym_array[i].type, sym_array[i].name);
-        free(sym_array[i].addr);
+    if (nm->args.r == 1 && nm->args.p == 0)
+    {    
+        for (int i = size - 1; 0 <= i; i--) {
+            if (nm->args.u == 1 && (sym_array[i].type != 'U' && sym_array[i].type != 'w'))
+                continue;
+            ft_printf("%s %c %s\n", sym_array[i].addr, sym_array[i].type, sym_array[i].name);
+            free(sym_array[i].addr);
+        }
+    }
+    else 
+    {
+        for (int i = 0; i < size; i++) {
+            if (nm->args.u == 1 && (sym_array[i].type != 'U' && sym_array[i].type != 'w'))
+                continue;
+            ft_printf("%s %c %s\n", sym_array[i].addr, sym_array[i].type, sym_array[i].name);
+            free(sym_array[i].addr);
+        }
     }
 }
-
-/*
-    -u overrides -a and -g
-    -g overrides -a
-    -p overrides -r
-*/

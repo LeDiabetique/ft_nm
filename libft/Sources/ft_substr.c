@@ -36,11 +36,3 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	j = ft_strlcpy(s1, &s[start], j);
 	return (s1);
 }
-/*
-int main()
-{
-	char *str;
-	
-	str = ft_substr("test", 1, 6);
-	printf("%s",str);
-}*/

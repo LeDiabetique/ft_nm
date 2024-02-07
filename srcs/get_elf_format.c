@@ -30,7 +30,7 @@ int get_elf_format(t_nm * nm)
 	if (e_shoff + (e_shentsize * e_shnum) > (long unsigned int)nm->buf.st_size)
     {
 		if (is_64)
-			return (ft_error(nm->filename, 5), ft_error(nm->filename, 1), 1);
+			return (ft_error(nm->filename, 1), 1);
 		return (ft_error(nm->filename, 3), 1);
 	}
 	if (e_shstrndx >= e_shnum)
