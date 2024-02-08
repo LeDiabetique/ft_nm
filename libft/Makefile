@@ -27,18 +27,18 @@ all: $(NAME)
 
 $(NAME): $(SRCO)
 	@ar rcs $(NAME) $(SRCO)
-	@echo "\033[92mLibrary Compiled"
+	@echo "\033[92mLibrary Compiled\033[97m"
 
 $(SRC_PATH)%.o: $(SRC_PATH)%.c
 	@gcc $(FLAGS) -c $< -o $@
 
 clean:
 	@rm -f $(SRCO) $(SRCBO)
-	@echo "\033[93mAll .o Files Removed"
+	@echo "\033[93mAll .o Files Removed\033[97m"
 
 fclean: clean
 	@rm -f $(NAME)
-	@echo "\033[95mLibrary Removed"
+	@echo "\033[95mLibrary Removed\033[97m"
 
 re:	fclean all
 

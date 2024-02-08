@@ -20,11 +20,12 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 GREEN		:= \033[92m
 YELLOW		:= \033[93m
 PURPLE 		:= \033[95m
+WHITE		:= \033[97m
 
 ${NAME}:	${OBJS}
 	@make -C libft
 	@${CC} ${FLAGS} -o ${NAME} ${OBJS} libft/libft.a
-	@echo "$(PURPLE)Executable $(GREEN)ft_nm created"
+	@echo "$(PURPLE)Executable $(GREEN)ft_nm created$(WHITE)"
 
 all:		${NAME}
 
@@ -32,14 +33,14 @@ clean:
 	@make clean -C libft
 	@$(RM) $(OBJ_DIR)*.o
 	@[ -d $(OBJ_DIR) ] && rmdir $(OBJ_DIR) || true
-	@echo "$(YELLOW)All .o Files inside ft_nm directory deleted"
+	@echo "$(YELLOW)All .o Files inside ft_nm directory deleted$(WHITE)"
 
 fclean:
 	@make fclean -C libft
 	@$(RM) $(OBJ_DIR)*.o
 	@[ -d $(OBJ_DIR) ] && rmdir $(OBJ_DIR) || true
 	@${RM} ${NAME}
-	@echo "$(PURPLE)$(NAME) $(YELLOW)and .o files inside ft_nm directory deleted"
+	@echo "$(PURPLE)$(NAME) $(YELLOW)and .o files inside ft_nm directory deleted$(WHITE)"
 
 re:	fclean all
 
