@@ -1,0 +1,28 @@
+exemple_files/bad_files/elf_linux_x64_chacl_big_e_shoff
+0a1
+> bfd plugin: exemple_files/bad_files/elf_linux_x64_chacl_big_e_shoff: file too short
+---------------------------------------------------------------------
+exemple_files/bad_files/bad_size
+0a1
+> bfd plugin: exemple_files/bad_files/bad_size: file too short
+---------------------------------------------------------------------
+exemple_files/mandatory/unterminated_string
+0a1
+> bfd plugin: exemple_files/mandatory/unterminated_string: file too short
+---------------------------------------------------------------------
+exemple_files/mandatory/header_and_prog
+0a1
+> bfd plugin: exemple_files/mandatory/header_and_prog: file too short
+---------------------------------------------------------------------
+exemple_files/mandatory/header_and_prog_copy
+0a1
+> bfd plugin: exemple_files/mandatory/header_and_prog_copy: file too short
+---------------------------------------------------------------------
+exemple_files/mandatory/header_copy
+0a1
+> bfd plugin: exemple_files/mandatory/header_copy: file too short
+---------------------------------------------------------------------
+exemple_files/mandatory/header
+0a1
+> bfd plugin: exemple_files/mandatory/header: file too short
+---------------------------------------------------------------------
